@@ -7,13 +7,12 @@ def help():
 if __name__ == '__main__':
 #dram 32 posicoes
 #cash 8 posicoes
-
+#
 	help()
 	dram = {}
-	cache = ['0' for i in range(8)]
+	cache = {'{0:05b}'.format(i) for i in range(8)}
+	cache = dict.fromkeys(cache, '0')
 	buffer_entrada = []
-	
-	
 	
 	with open(sys.argv[1], 'r') as f:
 		for i in range(32):
@@ -26,5 +25,7 @@ if __name__ == '__main__':
 				break
 
 			buffer_entrada.append(line)
-	print(sorted(dram.items(), key=lambda x : x[0]))
-	print('\n', buffer_entrada)
+	
+	#print(dram,'\n\n',sorted(dram.items(), key=lambda x : x[0]))
+	#print('\n', buffer_entrada)
+	#print('\n', sorted(cache.items(), key=lambda x : x[0]))
