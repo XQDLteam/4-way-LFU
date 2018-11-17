@@ -87,21 +87,21 @@ class Memoria:
         :return:
         """
         num_conjunto = int(posicao_memoria) % int(self.qtd_conjuntos)
-        lista_posicoes = self.get_cache_conjunto(num_conjunto)
+        list_posicoes = self.get_cache_conjunto(num_conjunto)
 
-        # descobrir dentro do conjunto qual posição da cache tem menos acesso
+        # descobrir dentro do conjunto qual posição da cache tem menos acessos
         posicao_substituir = 0
-        if len(lista_posicoes) > 1:
+        if len(list_posicoes) > 1:
 
             # descobrir qual das posições é menos usada
-            lista_qtd_acessos = []
-            for qtd_acessos in lista_posicoes:
-                lista_qtd_acessos.append(contador_lfu[qtd_acessos])
+            list_qtd_acessos = []
+            for qtd_acessos in list_posicoes:
+                list_qtd_acessos.append(contador_lfu[qtd_acessos])
 
-            posicoes_com_menos_acesso = min(lista_qtd_acessos)
+            posicoes_com_menos_acesso = min(list_qtd_acessos)
             candidatos_lfu = []
 
-            for qtd_acessos in lista_posicoes:
+            for qtd_acessos in list_posicoes:
                 if contador_lfu[qtd_acessos] == posicoes_com_menos_acesso:
                     candidatos_lfu.append(qtd_acessos)
 
@@ -115,7 +115,7 @@ class Memoria:
         # altera a posição de memória que está na cache
         self.cache[posicao_substituir] = posicao_memoria
 
-    def exec(self, qtd_conjuntos, mem_acess):
+    def exec(self, mem_acess):
         """
             executa a operacao de mapeamento associativo por conjuntos
         :param qtd_conjuntos: numero de conjuntos na cache
