@@ -34,8 +34,13 @@ O endereço ```i``` da memoria principal pode mapear para qualquer endereço no 
   
 
 ## Material de apoio
-Arquitetura e Organização de Computadores II - Unidade 2: Gerência de memória https://www.inf.pucrs.br/~flash/orgarq/aulas/memoria
+PUCRS: Arquitetura e Organização de Computadores II - Unidade 2: Gerência de memória 
 
+https://www.inf.pucrs.br/~flash/orgarq/aulas/memoria
+
+UNIVESP: Organização de Computadores – Aula 12 – Memória Cache
+
+https://www.youtube.com/watch?v=7j7A88izk8E&t=1155s
 ## Devs
 
 Gustavo "cr0d" Rodrigues
