@@ -1,5 +1,5 @@
 import random
-
+import sys
 
 # Essa lista irá armazenar qual o número de vezes que uma
 # determinada posição da memória cache foi acessada.
@@ -180,3 +180,35 @@ class Memoria:
             if self.cache[x] == -1:
                 return x
         return -1
+
+def help():
+    if len(sys.argv) < 3:
+        print("Uso: python3 "+sys.argv[0]+" <arg-lista_busca> <arq-mem_prin>")
+        sys.exit()
+
+if __name__ == '__main__':
+	
+    	
+    procura_cache = [] #lista com as posicoes para serem buscadas na memoria principal
+    dram = {}
+    
+    help()
+
+    #leitura do arquivo de busca na cache
+    with open(sys.argv[1],'r') as f:
+        while True:
+            line = f.readline().replace('\n','')
+            if line == "":
+                break
+            procura_cache.append(line)
+
+    #leitrura do arquivo para carregar a memoria principal
+    with open (sys.argv[2], 'r') as f:
+        for i in range(32):
+            dram['{0:05b}'.format(i)] = f.readline().replace('\n','')
+
+    print(procura_cache)
+    print('\n\n',dram)
+
+    cache = Memoria(8,4)
+    cache.exec(procura_cache)
