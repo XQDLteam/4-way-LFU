@@ -4,7 +4,7 @@ import sys
 # Essa lista irá armazenar qual o número de vezes que uma
 # determinada posição da memória cache foi acessada.
 contador_lfu = {}
-
+dram = {}
 
 
 class Memoria:
@@ -23,7 +23,7 @@ class Memoria:
         """
         for x in range(0, self.tamanho_cache):
             self.cache[x] = -1
-
+        print (self.cache)
     def init_lfu(self):
         """
           Seta os valores do contador LFU para zero, ou seja, a posição de memória que ocupa aquela
@@ -44,10 +44,10 @@ class Memoria:
         :return:
             se deu hit ou nao, se deu hit retorna a posicao
         """
-
+        print("posicao_memoria:", posicao_memoria, "qtd_conjuntos: ", self.qtd_conjuntos)
         # a divisao de conjuntos, olhando em q posicao ela estaria
-        num_conjunto = int(posicao_memoria) % int(self.qtd_conjuntos)
-
+        num_conjunto = int(posicao_memoria,2) % int(self.qtd_conjuntos)
+        print(num_conjunto)
         while num_conjunto < self.tamanho_cache:
             if self.cache[num_conjunto] == posicao_memoria:
                 return num_conjunto
@@ -136,13 +136,14 @@ class Memoria:
             if posit_cache >= 0:
                 #### HIT ####
                 self.hits += 1
+                #print_cache()
                 print('Cache HIT: posiçao de memória {}, posição cache {}'.format(posicao_memoria, posit_cache))
                 contador_lfu[posit_cache] += 1
 
             else:
                 #### MISS ####
                 self.miss += 1
-                print('Cache MISS: posiçao de memória {}'.format(posicao_memoria))
+                print('Cache MISS: posiçao de memória {} conteudo {}'.format(posicao_memoria, dram[posicao_memoria]))
 
                 # verifica se existe uma posição vazia na cache NAQUELE CONJUNTO, se sim aloca nela a posição de memória
                 posicao_vazia = self.posicao_vazia(posicao_memoria)
@@ -152,6 +153,7 @@ class Memoria:
                 else:
                     # se n tem posicao vazia
                     self.LFU(posicao_memoria)
+            print(self.cache)
 
         print('\n\n-----------------')
         print('Resumo Mapeamento 4-way-associative')
@@ -164,6 +166,20 @@ class Memoria:
         taxa_cache_hit = (self.hits/ len(mem_acess)) * 100
         print('Taxa de Cache HIT {number:.{digits}f}%'.format(number=taxa_cache_hit, digits=2))
 
+    def print_cache():
+
+        print("---------------------------")
+        print("-          CACHE          -")
+        print("---------------------------")
+        print("-1                        -")
+        print("-2                        -")
+        print("-3                        -")
+        print("-4                        -")
+        print("-5                        -")
+        print("-6                        -")
+        print("-7                        -")
+        print("-8                        -")
+        print("---------------------------")
     def posicao_vazia(self, posicao_memoria):
         """
             Verifica se existe na cache uma posição de memória que ainda não foi utilizada,
@@ -190,7 +206,7 @@ if __name__ == '__main__':
 	
     	
     procura_cache = [] #lista com as posicoes para serem buscadas na memoria principal
-    dram = {}
+    #dram = {}
     
     help()
 
@@ -207,8 +223,8 @@ if __name__ == '__main__':
         for i in range(32):
             dram['{0:05b}'.format(i)] = f.readline().replace('\n','')
 
-    print(procura_cache)
-    print('\n\n',dram)
+    #print(procura_cache)
+    #print('\n\n',dram)
 
     cache = Memoria(8,4)
     cache.exec(procura_cache)
