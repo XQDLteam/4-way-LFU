@@ -1,7 +1,7 @@
 # 4-way-LFU
 4-way LFU associative cache - Arquitetura e organizção de computadores II
 
-### Mapeamento Conjunto associativo
+#### Mapeamento Conjunto associativo
 Compromisso entre mapeamento direto e completamente associativo
 
 Cache  divida em S (4 nesse caso) conjuntos de N blocos/palavras
@@ -16,7 +16,7 @@ O endereço ```i``` da memoria principal pode mapear para qualquer endereço no 
   
   - Preciso de política de substituição (Quando tenho miss e busco no nível mais abaixo, caso o conjunto já esteja cheio, quem tirar para abrir lugar? - LFU)
   
-### Passos para um acesso
+#### Passos para um acesso
   1. Calcular o módulo do endereço que procuro pelo número de conjustos S da cache (ou utilizar os bits menos significativos do endereço);
   
   2. Alimentar a memória associativa deste conjunto com o Tag procurado;
@@ -29,15 +29,22 @@ O endereço ```i``` da memoria principal pode mapear para qualquer endereço no 
   
   6. Busco o endereço procurado no nível mais baixo e coloco em uma posição livre (ou escolhida) da cache cadastrando essa posiço e Tag na memória associativa do conjunto e efetuo a leitura (fim);
   
-  
+# Execução
 
-## Material de apoio
+O algoritmo requere como parâmetro um arquivo que contém os endereços que serão lidos, e um arquivo com as palavras que preenchem a memoria principal. 
+
+exemplo de execução:
+
+```python3 memoria.py busca_cache.txt mem_prin.txt```
+
+
+# Material de apoio
 PUCRS: Arquitetura e Organização de Computadores II - Unidade 2: Gerência de memória: 
 https://www.inf.pucrs.br/~flash/orgarq/aulas/memoria
 
 UNIVESP: Organização de Computadores – Aula 12 – Memória Cache:
 https://www.youtube.com/watch?v=7j7A88izk8E&t=1155s
-## Devs
+# Devs
 
 Gustavo "cr0d" Rodrigues
 
