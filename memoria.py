@@ -6,11 +6,14 @@ import sys
 contador_lfu = {}
 dram = {}
 
-def to_binary(num):
+def to_binary_cache(num):
+    return '{0:03b}'.format(num)
+
+def to_binary_mem(num):
     return '{0:05b}'.format(num)
 
 def to_int(num):
-    return int(num,2)
+    return int(num, 2)
 
 class Memoria:
     def __init__(self, tamanho_cache, qtd_conjuntos):
@@ -28,18 +31,19 @@ class Memoria:
         print("+----------+---------------+")
         print("|     Cache Associativo    |")
         print("+----------+---------------+")
-        print("|Pos Cache |Posição Memória|")
+        print("|     TAG    |    Memoria  |")
         print("+----------+---------------+")
         for posicao, valor in self.cache.items():
             print("|{:>10}|{:>15}|".format(posicao, valor))
         print("+----------+---------------+")
 
+
     def init_cache(self):
-        """ Cria uma memória cache zerada utilizando dicionários (chave, valor) e com
+        """ Cria uma memória cache zerada utilizando dicionários (tag, memoria) e com
             valor padrão igual a '-1'
             popula a memória cache com o valor -1, isso indica que a posição não foi usada
         """
-        self.cache = {to_binary(i) for i in range(8)}
+        self.cache = {to_binary_cache(i) for i in range(8)}
         self.cache = dict.fromkeys(self.cache, '-1')
 
         print (self.cache)
@@ -52,7 +56,7 @@ class Memoria:
         """
         global contador_lfu
         # cria on contador LFU uma posiçõao para caqda posição da cache
-        contador_lfu = {to_binary(i) for i in range(8)}
+        contador_lfu = {to_binary_cache(i) for i in range(8)}
         contador_lfu = dict.fromkeys(contador_lfu, 0)
 
     def hit(self, posicao_memoria):
@@ -65,11 +69,11 @@ class Memoria:
             se deu hit ou nao, se deu hit retorna a posicao
         """
 
-        # a divisao de conjuntos, olhando em q posicao ela estaria
+        # aqui ocorre o split - separando a tag do xqdl, e pegando os 3 bits menos signf
         num_conjunto = to_int(posicao_memoria) % int(self.qtd_conjuntos)
 
         while num_conjunto < self.tamanho_cache:
-            if self.cache[to_binary(num_conjunto)] == posicao_memoria:
+            if self.cache[to_binary_cache(num_conjunto)] == posicao_memoria:
                 return num_conjunto
 
             # pula o tamanho do conjunto
@@ -90,7 +94,7 @@ class Memoria:
         lista_posicoes = []
         posicao_inicial = num_conjunto
         while posicao_inicial < self.tamanho_cache:
-            lista_posicoes.append(to_binary(posicao_inicial))
+            lista_posicoes.append(to_binary_cache(posicao_inicial))
             posicao_inicial += self.qtd_conjuntos
 
         return lista_posicoes
@@ -156,7 +160,7 @@ class Memoria:
                 self.hits += 1
                 #print_cache()
                 print('Cache HIT: posiçao de memória {}, posição cache {}'.format(posicao_memoria, posit_cache))
-                contador_lfu[to_binary(posit_cache)] += 1
+                contador_lfu[to_binary_cache(posit_cache)] += 1
 
             else:
                 self.print_cache()
@@ -228,7 +232,7 @@ if __name__ == '__main__':
     #leitrura do arquivo para carregar a memoria principal
     with open (sys.argv[2], 'r') as f:
         for i in range(32):
-            dram['{0:05b}'.format(i)] = f.readline().replace('\n','')
+            dram[to_binary_mem(i)] = f.readline().replace('\n','')
 
     #print(procura_cache)
     #print('\n\n',dram)
