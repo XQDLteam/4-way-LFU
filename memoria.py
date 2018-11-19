@@ -6,6 +6,11 @@ import sys
 contador_lfu = {}
 dram = {}
 
+def to_binary(num):
+    return '{0:05b}'.format(num)
+
+def to_int(num):
+    return int(num,2)
 
 class Memoria:
     def __init__(self, tamanho_cache, qtd_conjuntos):
@@ -15,41 +20,56 @@ class Memoria:
         self.tamanho_cache = tamanho_cache # tamanho da cache
         self.qtd_conjuntos = qtd_conjuntos # quantidade total de conjuntos
 
+    def print_cache(self):
+        """Imprime o estado da memória cache no modelo de mapeamento associativo.
+        """
+        print("+--------------------------+")
+        print("|Tamanho Cache: {:>11}| ".format(self.tamanho_cache))
+        print("+----------+---------------+")
+        print("|     Cache Associativo    |")
+        print("+----------+---------------+")
+        print("|Pos Cache |Posição Memória|")
+        print("+----------+---------------+")
+        for posicao, valor in self.cache.items():
+            print("|{:>10}|{:>15}|".format(posicao, valor))
+        print("+----------+---------------+")
 
     def init_cache(self):
         """ Cria uma memória cache zerada utilizando dicionários (chave, valor) e com
             valor padrão igual a '-1'
             popula a memória cache com o valor -1, isso indica que a posição não foi usada
         """
-        for x in range(0, self.tamanho_cache):
-            self.cache[x] = -1
+        self.cache = {to_binary(i) for i in range(8)}
+        self.cache = dict.fromkeys(self.cache, '-1')
+
         print (self.cache)
+
     def init_lfu(self):
         """
           Seta os valores do contador LFU para zero, ou seja, a posição de memória que ocupa aquela
           posição da cache ainda não foi utilizada. Para cada posição da cache teremos um contador
           que será somado tada vez que houver um CACHE HIT e, será zerado quando a posição for substituida
         """
-        # cria on contador LFU uma posiçõao para caqda posição de memória
-        for x in range(0, self.tamanho_cache):
-            contador_lfu[x] = 0
+        global contador_lfu
+        # cria on contador LFU uma posiçõao para caqda posição da cache
+        contador_lfu = {to_binary(i) for i in range(8)}
+        contador_lfu = dict.fromkeys(contador_lfu, 0)
 
     def hit(self, posicao_memoria):
         """
             Verifica se uma determinada posição de memória está na cache
 
 
-        :param posicao_memoria:
-            posicao de memoria a ser testada
+        :param posicao_memoria: posicao de memoria a ser testada
         :return:
             se deu hit ou nao, se deu hit retorna a posicao
         """
-        print("posicao_memoria:", posicao_memoria, "qtd_conjuntos: ", self.qtd_conjuntos)
+
         # a divisao de conjuntos, olhando em q posicao ela estaria
-        num_conjunto = int(posicao_memoria,2) % int(self.qtd_conjuntos)
-        print(num_conjunto)
+        num_conjunto = to_int(posicao_memoria) % int(self.qtd_conjuntos)
+
         while num_conjunto < self.tamanho_cache:
-            if self.cache[num_conjunto] == posicao_memoria:
+            if self.cache[to_binary(num_conjunto)] == posicao_memoria:
                 return num_conjunto
 
             # pula o tamanho do conjunto
@@ -63,16 +83,14 @@ class Memoria:
         Retorna uma lista com todas as posições da memória cache que fazem
             parte de um determinado conjunto.
 
-        :param num_conjunto:
-            {int} -- número do conjunto que se quer saber quais são os endereçamentos associados com aquele conjunto
-        :return:
-            [list] -- lista de posições de memória associada com um conjunto em particular
+        :param num_conjunto: número do conjunto que se quer saber quais são os endereçamentos associados com aquele conjunto
+        :return: lista de posições de memória associada com um conjunto em particular
         """
 
         lista_posicoes = []
         posicao_inicial = num_conjunto
         while posicao_inicial < self.tamanho_cache:
-            lista_posicoes.append(posicao_inicial)
+            lista_posicoes.append(to_binary(posicao_inicial))
             posicao_inicial += self.qtd_conjuntos
 
         return lista_posicoes
@@ -86,7 +104,7 @@ class Memoria:
         :param posicao_memoria: posicao de memoria q sera acessada
         :return:
         """
-        num_conjunto = int(posicao_memoria) % int(self.qtd_conjuntos)
+        num_conjunto = to_int(posicao_memoria) % int(self.qtd_conjuntos)
         list_posicoes = self.get_cache_conjunto(num_conjunto)
 
         # descobrir dentro do conjunto qual posição da cache tem menos acessos
@@ -138,9 +156,10 @@ class Memoria:
                 self.hits += 1
                 #print_cache()
                 print('Cache HIT: posiçao de memória {}, posição cache {}'.format(posicao_memoria, posit_cache))
-                contador_lfu[posit_cache] += 1
+                contador_lfu[to_binary(posit_cache)] += 1
 
             else:
+                self.print_cache()
                 #### MISS ####
                 self.miss += 1
                 print('Cache MISS: posiçao de memória {} conteudo {}'.format(posicao_memoria, dram[posicao_memoria]))
@@ -153,7 +172,9 @@ class Memoria:
                 else:
                     # se n tem posicao vazia
                     self.LFU(posicao_memoria)
-            print(self.cache)
+            self.print_cache()
+            print('Tecle ENTER para processar o próximo passo:');
+            input()
 
         print('\n\n-----------------')
         print('Resumo Mapeamento 4-way-associative')
@@ -166,20 +187,6 @@ class Memoria:
         taxa_cache_hit = (self.hits/ len(mem_acess)) * 100
         print('Taxa de Cache HIT {number:.{digits}f}%'.format(number=taxa_cache_hit, digits=2))
 
-    def print_cache():
-
-        print("---------------------------")
-        print("-          CACHE          -")
-        print("---------------------------")
-        print("-1                        -")
-        print("-2                        -")
-        print("-3                        -")
-        print("-4                        -")
-        print("-5                        -")
-        print("-6                        -")
-        print("-7                        -")
-        print("-8                        -")
-        print("---------------------------")
     def posicao_vazia(self, posicao_memoria):
         """
             Verifica se existe na cache uma posição de memória que ainda não foi utilizada,
