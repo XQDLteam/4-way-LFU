@@ -29,7 +29,7 @@ class Memoria:
         print("+--------------------------+")
         print("|Tamanho Cache: {:>11}| ".format(self.tamanho_cache))
         print("+----------+---------------+")
-        print("|     Cache Associativo    |")
+        print("|      4-WAY-LFU-CACHE     |")
         print("+----------+---------------+")
         print("|     TAG    |    Memoria  |")
         print("+----------+---------------+")
@@ -46,7 +46,6 @@ class Memoria:
         self.cache = {to_binary_cache(i) for i in range(8)}
         self.cache = dict.fromkeys(self.cache, '-1')
 
-        print (self.cache)
 
     def init_lfu(self):
         """
@@ -147,6 +146,7 @@ class Memoria:
         """
         self.init_cache()
         self.init_lfu()
+        self.print_cache()
 
         # percorre cada uma das posições de memória que estavam no arquivo
         for index, posicao_memoria in enumerate(mem_acess):
@@ -158,15 +158,13 @@ class Memoria:
             if posit_cache >= 0:
                 #### HIT ####
                 self.hits += 1
-                #print_cache()
-                print('Cache HIT: posiçao de memória {}, posição cache {}'.format(posicao_memoria, posit_cache))
+                print('Cache HIT: posiçao de memória {}, posição cache {}'.format(posicao_memoria, to_binary_cache(posit_cache)))
                 contador_lfu[to_binary_cache(posit_cache)] += 1
 
             else:
-                self.print_cache()
                 #### MISS ####
                 self.miss += 1
-                print('Cache MISS: posiçao de memória {} conteudo {}'.format(posicao_memoria, dram[posicao_memoria]))
+                print('Cache MISS: endereço {} conteudo {}'.format(posicao_memoria, dram[posicao_memoria]))
 
                 # verifica se existe uma posição vazia na cache NAQUELE CONJUNTO, se sim aloca nela a posição de memória
                 posicao_vazia = self.posicao_vazia(posicao_memoria)
@@ -176,9 +174,10 @@ class Memoria:
                 else:
                     # se n tem posicao vazia
                     self.LFU(posicao_memoria)
-            self.print_cache()
+
             print('Tecle ENTER para processar o próximo passo:');
             input()
+            self.print_cache()
 
         print('\n\n-----------------')
         print('Resumo Mapeamento 4-way-associative')
