@@ -28,7 +28,10 @@ O endereço ```i``` da memoria principal pode mapear para qualquer endereço no 
   5. Se não existir posiço livre no conjunto -> escolho um endereço para substituir (LFU);
   
   6. Busco o endereço procurado no nível mais baixo e coloco em uma posição livre (ou escolhida) da cache cadastrando essa posiço e Tag na memória associativa do conjunto e efetuo a leitura (fim);
-  
+
+#Algortimo de Substituição - LFU
+
+O LFU usa como parâmetro para substituição o elemento que aparece com menos frequência na cache. A frequência de um elemento cresce a medida que acontece um hit. Caso haja empate de frequência, então é selecionado um elemento aleatoriamente para a substituição. Com isso, é possível perceber uma variação nos cache hits de acordo com as execuções do simulador.
 # Execução
 
 O algoritmo requere como parâmetro um arquivo que contém os endereços que serão lidos, e um arquivo com as palavras que preenchem a memoria principal. 

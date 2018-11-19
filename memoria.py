@@ -33,7 +33,7 @@ class Memoria:
         print("+----------+---------------+")
         print("|     TAG    |    Memoria  |")
         print("+----------+---------------+")
-        for posicao, valor in self.cache.items():
+        for posicao, valor in sorted(self.cache.items(), key = lambda x :x[0]):
             print("|{:>10}|{:>15}|".format(posicao, valor))
         print("+----------+---------------+")
 
